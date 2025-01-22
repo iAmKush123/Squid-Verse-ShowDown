@@ -16,7 +16,7 @@
 
 .game-container {
   position: relative;
-  z-index: 2; /* Ensure game elements are above the overlay */
+  z-index: 2;
 }
 .text-container {
   font-family: 'Courier New', Courier, monospace;
