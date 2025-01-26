@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buzzer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Press the Buzzer</h1>
+    <div id="teamName"></div>
+    <button id="buzzerButton">Press Buzzer</button>
+    <p id="response"></p>
+  </div>
+
+  <script>
+    async function fetchTeamName() {
+      const response = await fetch("http://localhost:3000/teams");
+      const teams = await response.json();
+      const lastTeam = teams[teams.length - 1]; // Get the last registered team
+      document.getElementById("teamName").textContent = `Team: ${lastTeam.teamName}`;
+    }
+
+    document.getElementById("buzzerButton").addEventListener("click", async () => {
+      const teamName = document.getElementById("teamName").textContent.replace("Team: ", "").trim();
+      const response = await fetch("http://localhost:3000/buzz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ teamName }),
+      });
+
+      const responseText = await response.text();
+      document.getElementById("response").textContent = response.ok ? responseText : responseText;
+    });
+
+    fetchTeamName();
+  </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register Team</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Register Your Team</h1>
+    <form id="registrationForm">
+      <label for="teamName">Team Name:</label>
+      <input type="text" id="teamName" placeholder="Enter your team name" required />
+      <button type="submit">Register</button>
+    </form>
+    <p id="response"></p>
+  </div>
+
+  <script>
+    document.getElementById("registrationForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const teamName = document.getElementById("teamName").value.trim();
+
+      const response = await fetch("http://localhost:3000/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ teamName }),
+      });
+
+      if (response.ok) {
+        document.getElementById("response").textContent = "Team registered successfully!";
+        setTimeout(() => {
+          window.location.href = "/buzzer";
+        }, 1000); // Redirect to buzzer page after registration
+      } else {
+        const errorText = await response.text();
+        document.getElementById("response").textContent = errorText;
+      }
+    });
+  </script>
+</body>
+</html>

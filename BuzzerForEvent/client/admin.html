@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Admin Panel</h1>
+    <button id="activateButton" class="btn btn-activate">Activate Buzzer</button>
+    <button id="deactivateButton" class="btn btn-deactivate">Deactivate Buzzer</button>
+    <div id="leaderboard"></div>
+  </div>
+
+  <script>
+    async function fetchLeaderboard() {
+      const response = await fetch("http://localhost:3000/entries");
+      const data = await response.json();
+
+      const leaderboard = document.getElementById("leaderboard");
+      leaderboard.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Team Name</th>
+              <th>Time Taken (s)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data
+              .map(
+                (entry, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${entry.teamName}</td>
+                  <td>${entry.timeTaken.toFixed(2)}</td>
+                </tr>
+              `
+              )
+              .join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    document.getElementById("activateButton").addEventListener("click", async () => {
+      const response = await fetch("http://localhost:3000/activate", { method: "POST" });
+      if (response.ok) {
+        alert("Buzzer activated!");
+        fetchLeaderboard();
+      }
+    });
+
+    document.getElementById("deactivateButton").addEventListener("click", async () => {
+      const response = await fetch("http://localhost:3000/deactivate", { method: "POST" });
+      if (response.ok) {
+        alert("Buzzer deactivated and timer reset!");
+        fetchLeaderboard();
+      }
+    });
+
+    fetchLeaderboard();
+    setInterval(fetchLeaderboard, 5000); // Refresh leaderboard every 5 seconds
+  </script>
+</body>
+</html>
